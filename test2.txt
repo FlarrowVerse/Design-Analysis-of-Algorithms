@@ -1,0 +1,12 @@
+This is a test second time
+ow can I say exit?
+ have to press Enter twice
+
+This is an addendum to previous version
+It tests wether the first char is there or not.
+End Test.
+
+This is latest addition.
+Testing write mode.
+Exit Test.
+
