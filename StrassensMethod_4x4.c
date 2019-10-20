@@ -6,13 +6,12 @@
 int** makeMatrix(int ,int);
 //int** setMatrix(int*, int*);
 void showMatrix(int**, int, int);
-void eraseMatrix(int**, int);
 int** getPartMatrix(int**, int, int, int);
-int** add(int**, int**, int);
-int** sub(int**, int**, int);
+int** add(int**, int**);
+int** sub(int**, int**);
 void joinMatrix(int**, int**, int**, int**, int**, int);
 int** strassen(int**, int**);
-int** strassenMultiply(int**, int, int**, int);
+int** strassenMultiply(int**, int**);
 int** readFile(int*, int*, int);
 void writeFile(int**, int, int);
 /*Method definitions end here---------------------------------------------------------------*/
@@ -33,25 +32,6 @@ int** makeMatrix(int row, int col) {
     return a;
 }
 
-/* creates an empty Matrix and fills them with user input */
-/* int** setMatrix(int *row, int *col) {
-  	int **a, k;
-    printf("Enter matrix size: ");
-    scanf("%d", &k); // matrix size will be 2^k
-    *row = pow(2, k);
-	*col = pow(2, k);
-
-    a = makeMatrix(*row, *col); // empty matrix init
-    int i, j;
-    for(i = 0; i < (*row); i++) {
-        for(j = 0; j < (*col); j++) {
-		  printf("a[%d][%d]:", i,j); // user prompt
-		  scanf("%d", &a[i][j]); // user input
-        }
-    }
-    return a;
-	}*/
-
 /* displays the matrix passed as param */
 void showMatrix(int **a, int row, int col) {
     int i, j;
@@ -61,13 +41,6 @@ void showMatrix(int **a, int row, int col) {
         }
         printf("\n");
     }
-}
-
-/* frees the memory of the matrix passed as param */
-void eraseMatrix(int **a, int row) {
-    int i;
-    for(i = 0; i < row; i++) free(a[i]);
-	free(a);
 }
 
 /* returns a part of the og matrix starting from (starti, startj) and of size size */
@@ -85,12 +58,12 @@ int** getPartMatrix(int **a, int starti, int startj, int size) {
 }
 
 /* adds two matrices and returns the result */
-int** add(int **a, int **b, int size) {
-  	int **sum = makeMatrix(size, size);
+int** add(int **a, int **b) {
+  	int **sum = makeMatrix(2, 2);
     int i, j;
 
-	for(i = 0; i < size; i++) {
-        for(j = 0; j < size; j++) {
+	for(i = 0; i < 2; i++) {
+        for(j = 0; j < 2; j++) {
           	sum[i][j] = a[i][j] + b[i][j];
         }
     }
@@ -99,12 +72,12 @@ int** add(int **a, int **b, int size) {
 }
 
 /* subtracts matrix b from a and returns the difference */
-int** sub(int **a, int **b, int size) {
-  	int **diff = makeMatrix(size, size);
+int** sub(int **a, int **b) {
+  	int **diff = makeMatrix(2, 2);
     int i, j;
 
-	for(i = 0; i < size; i++) {
-        for(j = 0; j < size; j++) {
+	for(i = 0; i < 2; i++) {
+        for(j = 0; j < 2; j++) {
           	diff[i][j] = a[i][j] - b[i][j];
         }
     }
@@ -146,38 +119,29 @@ void joinMatrix(int **a, int **a11, int **a12, int **a21, int **a22, int size) {
 
 
 /* Underdeveloped Strassen Multiplication algorithm for n x n matrix, where n = 2^k */
-int** strassenMultiply(int **a, int asize, int **b, int bsize) {
-  	if(asize == 2) {
-	  return strassen(a, b); // base case for recursive calls
-  	}
-    int **prod = makeMatrix(asize, asize); // init of product matrix
-	int subSize = asize/2; // size of sub matrices
+int** strassenMultiply(int **a, int **b) {
+  	
+    int **prod = makeMatrix(4, 4); // init of product matrix	
 
-    int **a11 = getPartMatrix(a, 0, 0, subSize), **a12 = getPartMatrix(a, 0, subSize, subSize);
-    int **a21 = getPartMatrix(a, subSize, 0, subSize), **a22 = getPartMatrix(a, subSize, subSize, subSize); // sub-parts of a  
-    int **b11 = getPartMatrix(b, 0, 0, subSize), **b12 = getPartMatrix(b, 0, subSize, subSize);
-    int **b21 = getPartMatrix(b, subSize, 0, subSize), **b22 = getPartMatrix(b, subSize, subSize, subSize); // sub-parts of b
+    int **a11 = getPartMatrix(a, 0, 0, 2), **a12 = getPartMatrix(a, 0, 2, 2);
+    int **a21 = getPartMatrix(a, 2, 0, 2), **a22 = getPartMatrix(a, 2, 2, 2); // sub-parts of a  
+    int **b11 = getPartMatrix(b, 0, 0, 2), **b12 = getPartMatrix(b, 0, 2, 2);
+    int **b21 = getPartMatrix(b, 2, 0, 2), **b22 = getPartMatrix(b, 2, 2, 2); // sub-parts of b
 
-	int **p1 = strassenMultiply(a11, subSize, sub(b12, b22, subSize), subSize); // a11 x ( b12 - b22 )
-	int **p2 = strassenMultiply(add(a11, a12, subSize), subSize, b22, subSize); // ( a11 + a12 ) x b22
-	int **p3 = strassenMultiply(add(a21, a22, subSize), subSize, b11, subSize); // ( a21 + a22 ) x b11
-	int **p4 = strassenMultiply(a22, subSize, sub(b21, b11, subSize), subSize); // a22 x ( b21 - b11 )
-	int **p5 = strassenMultiply(add(a11, a22, subSize), subSize, add(b11, b22, subSize), subSize); // ( a11 + a22 ) x ( b11 + b22 )
-	int **p6 = strassenMultiply(sub(a12, a22, subSize), subSize, add(b21, b22, subSize), subSize); // ( a12 - a22 ) x ( b21 + b22 )
-	int **p7 = strassenMultiply(sub(a11, a21, subSize), subSize, add(b11, b12, subSize), subSize); // ( a11 - a21 ) x ( b11 + b12 )
+	int **p1 = strassen(a11, sub(b12, b22)); // a11 x ( b12 - b22 )
+	int **p2 = strassen(add(a11, a12), b22); // ( a11 + a12 ) x b22
+	int **p3 = strassen(add(a21, a22), b11); // ( a21 + a22 ) x b11
+	int **p4 = strassen(a22, sub(b21, b11)); // a22 x ( b21 - b11 )
+	int **p5 = strassen(add(a11, a22), add(b11, b22)); // ( a11 + a22 ) x ( b11 + b22 )
+	int **p6 = strassen(sub(a12, a22), add(b21, b22)); // ( a12 - a22 ) x ( b21 + b22 )
+	int **p7 = strassen(sub(a11, a21), add(b11, b12)); // ( a11 - a21 ) x ( b11 + b12 )
 
-	int **prod11 = add(sub(add(p5, p4, subSize), p2, subSize), p6, subSize);
-	int **prod12 = add(p1, p2, subSize);
-	int **prod21 = add(p3, p4, subSize);
-	int **prod22 = sub(sub(add(p1, p5, subSize), p3, subSize), p7, subSize);
+	int **prod11 = add(sub(add(p5, p4), p2), p6);
+	int **prod12 = add(p1, p2);
+	int **prod21 = add(p3, p4);
+	int **prod22 = sub(sub(add(p1, p5), p3), p7);
 	
-	joinMatrix(prod, prod11, prod12, prod21, prod22, asize); // forming product matrix
-	eraseMatrix(prod11, subSize); eraseMatrix(prod12, subSize); eraseMatrix(prod21, subSize); eraseMatrix(prod22, subSize);
-	eraseMatrix(a11, subSize); eraseMatrix(a12, subSize); eraseMatrix(a21, subSize); eraseMatrix(a22, subSize);
-	eraseMatrix(b11, subSize); eraseMatrix(b12, subSize); eraseMatrix(b21, subSize); eraseMatrix(b22, subSize);
-	eraseMatrix(p1, subSize); eraseMatrix(p2, subSize); eraseMatrix(p3, subSize);
-	eraseMatrix(p4, subSize); eraseMatrix(p5, subSize); eraseMatrix(p6, subSize); eraseMatrix(p7, subSize);
-	
+	joinMatrix(prod, prod11, prod12, prod21, prod22, 4); // forming product matrix	
     
     return prod;
 }
@@ -267,23 +231,9 @@ int main() {
 		
 		cr = ar; cc = ac;
 		printf("\nThe product Matrix is:\n");
-        c = strassenMultiply(a, ar, b, br); // multiplying matrices A and B
+        c = strassenMultiply(a, b); // multiplying matrices A and B
         showMatrix(c, cr, cc);
 
 		writeFile(c, cr, cc);
-
-        eraseMatrix(a, ar);
-        eraseMatrix(b, br);
-		eraseMatrix(c, cr);
-
-        /**printf("Do you want to continue?(Y/N): ");
-        getchar();
-		char choice = getchar();
-        if(choice != 'Y' && choice != 'y') {
-		  	printf("Exiting Program!......\n\n");
-            break;
-			}*/
-
-		//}
-    return 0;
+		return 0;
 }

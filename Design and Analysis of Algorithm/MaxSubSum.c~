@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+int* input(int *len) {
+	printf("Enter size of Array: ");
+	scanf("%d", len);
+	int *a = (int *)calloc(*len, sizeof(int)), i;
+	for(i = 0; i < *len; i++) {
+		printf("Enter a number for a[%d]: ", i+1);
+		scanf("%d", &a[i]);
+	}
+	return a;
+}
+
+void show(int *a, int len) {
+	int i;
+	for(i = 0; i < len; i++) {
+		printf("%d ", a[i]);
+	}
+	printf("\n");
+}
+
+int getMaxSum(int *a, int lb, int ub) {
+
+	int i;
+	for(i = lb; i <= ub; i++) {
+		printf("%d ", a[i]);
+	}
+	printf("\n");
+	
+	if(lb == ub) return a[lb];
+	else if(lb == ub-1) {
+		if(a[lb]+a[ub] > a[lb] && a[lb]+a[ub] > a[ub]) return a[lb]+a[ub];
+		else return (a[lb] > a[ub])? a[lb]: a[ub];
+	}
+	int mid = (lb + ub)/2;
+	int left_sum = getMaxSum(a, lb, mid);
+	int right_sum = getMaxSum(a, mid+1, ub);	
+
+	return (left_sum > right_sum)? left_sum: right_sum;	
+}
+
+int main() {
+
+	int size, *a = input(&size);
+	printf("Original Array: ");
+	show(a, size);
+
+	int sum = getMaxSum(a, 0, size-1);
+	printf("Maximum Sub-Array Sum: %d\n\n", sum);
+	
+	return 0;
+}

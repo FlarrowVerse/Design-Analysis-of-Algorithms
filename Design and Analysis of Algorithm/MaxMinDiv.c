@@ -2,6 +2,17 @@
 #include <math.h>
 #include <stdlib.h>
 
+int* getPart(int *a, int size, int offset, int *len) {
+	int i, j = 0;
+	for(i = 0; i < size; i++) if(abs(a[i] % 2) == offset) (*len)++;
+	int *part = (int *)calloc(*len, sizeof(int));
+	
+	for(i = 0; i < size; i++) if(abs(a[i]%2) == offset) part[j++] = a[i];
+	
+	return part;
+}
+
+
 int getMax(int *a, int start, int end) {
 	if(end == start) return a[start];
 	else if(end-start == 1) {
@@ -63,16 +74,28 @@ void writeFile(int *a, int n, int max, int min) {
 
 int main() {
 
-	int n, *a;
+	int n, *a, e_size, o_size, i;
 
 	a = readFile(&n);
 
 	if(a == NULL) return 1;
+	
+	int *even = getPart(a, n, 0, &e_size);
+	int *odd = getPart(a, n, 1, &o_size);
+	
+	for(i = 0; i < n; i++) printf("%d ", a[i]);
+	
+	printf("\nEven elements: ");
+	for(i = 0; i < e_size; i++) printf("%d ", even[i]);
+	printf("\nMax using Divide and conquer: %d\n", getMax(even, 0, e_size-1));
+	printf("Min using Divide and conquer: %d\n", getMin(even, 0, e_size-1));
+	
+	printf("Odd elements: ");
+	for(i = 0; i < o_size; i++) printf("%d ", odd[i]);
+	printf("\nMax using Divide and conquer: %d\n", getMax(odd, 0, o_size-1));
+	printf("Min using Divide and conquer: %d\n", getMin(odd, 0, o_size-1));
 
-	printf("Max using Divide and conquer: %d\n", getMax(a, 0, n-1));
-	printf("Min using Divide and conquer: %d\n", getMin(a, 0, n-1));
-
-	writeFile(a, n, getMax(a, 0, n-1), getMin(a, 0, n-1));
+	//writeFile(a, n, getMax(a, 0, n-1), getMin(a, 0, n-1));
 	
 	return 0;
 }

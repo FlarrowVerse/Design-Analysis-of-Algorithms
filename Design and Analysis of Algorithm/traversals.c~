@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+/*-----------------------------DATA STRUCTURE DEFINITIONS--------------------------------------------------*/
+typedef struct STACK {
+	int top;
+	int *a;
+} stack;
+
+typedef struct QUEUE {
+	int front, rear;
+	int *a;
+} queue;
+
+/*----------------------------STACK METHODS--------------------------------------------*/
+int empty(stack *s) {
+	return (s->top == -1)? 1: 0;
+}

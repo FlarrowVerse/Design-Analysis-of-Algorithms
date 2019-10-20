@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <limits.h>
+
+#define INF INT_MAX
+
+typedef struct graph {
+	int **adj;
+	int nv;
+} graph;
+
+void init(graph *g) {	
+	g->adj = (int **)calloc(g->nv, sizeof(int *));
+	int i;
+	for(i = 0; i < g->nv; i++) {
+		g->adj[i] = (int *)calloc(g->nv, sizeof(int));
+	}
+}
+
+void readFile(graph *g) {
+	
+	FILE *fp = fopen("GraphInput.txt", "r");
+	
+	fscanf(fp, "%d", &(g->nv));
+	init(g);
+	int i, j;
+	for(i = 0; i < g->nv; i++) {
+		for(j = 0; j < g->nv; j++) {
+			fscanf(fp, "%d", &(g->adj[i][j]));
+		}
+	}
+	fclose(fp);
+}
+
+void showGraph(graph g) {
+	int i, j;
+	for(i = 0; i < g.nv; i++) {
+		for(j = 0; j < g.nv; j++) {
+			printf("%d\t", g.adj[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int main() {
+
+	graph *g = (graph *)malloc(sizeof(graph));	
+	readFile(g);
+
+	int i, j;
+	
+	showGraph(*g);
+	
+	return 0;
+}
