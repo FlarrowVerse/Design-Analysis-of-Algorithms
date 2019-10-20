@@ -11,12 +11,12 @@ Contains C codes for following:
   
 # Added som new Codes for Graph related algorithms
 
-Graph Algorithms
-  1.Minimum Spanning Tree: Prim's, Kruskal's
-  2.Shortest Path:
+Graph Algorithms:
+  1. Minimum Spanning Tree: Prim's, Kruskal's
+  2. Shortest Path:
     a. All Pair Shortest Path(APSP): Floyed-Warshall's
     b. Single Source Shortest Path(SSSP): Dijktra's, Bellman-Ford
-  3.Traversal Algorithms:
+  3. Traversal Algorithms:
     a.Breadth First Search
     b.Depth First Search
-  4.Travelling Salesman Problem(Not optimized)
+  4. Travelling Salesman Problem(Not optimized)
